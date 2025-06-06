@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Wardrobe Item</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #003366, #800020);
+            color: white;
+            overflow-x: hidden;
+            transition: all 0.5s ease-in-out;
+        }
+
+        h1 {
+            color: #FFD700;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 3rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #details {
+            margin: 20px auto;
+            padding: 20px;
+            width: 80%;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #0f0f0f;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        #details p {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .wardrobe-image {
+            display: block;
+            margin: 0 auto 20px auto;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            background-color: #B76E79;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #9B5E67;
+        }  
+
+        .update-button {
+            padding: 14px 28px;
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 20px auto;
+            display: block;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-button:hover {
+            background-color: #45a049;
+        }
+
+        .update-button:active {
+            transform: scale(0.98);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+            font-size: 1rem;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <a href="search.html" class="back-button">Back to Search</a>
+    <h1>Update Wardrobe Item</h1>
+    <div id="details">
+        <form id="updateForm">
+            <img id="imagePreview" class="wardrobe-image" src="/placeholder.jpg" onerror="handleImageError(this)">
+            <label>Name:</label>
+            <input type="text" id="name" name="name">
+            
+            <label>Category:</label>
+            <input type="text" id="category" name="category">
+            
+            <label>Gender:</label>
+            <input type="text" id="gender" name="gender">
+            
+            <label>Season:</label>
+            <input type="text" id="season" name="season">
+            
+            <label>Color Palette:</label>
+            <input type="text" id="color_palette" name="color_palette">
+            
+            <label>Status:</label>
+            <input type="text" id="status" name="status">
+            
+            <label>Material:</label>
+            <input type="text" id="material" name="material">
+            
+            <label>Location:</label>
+            <input type="text" id="location" name="location">
+            
+            <label>Last Worn:</label>
+            <input type="date" id="last_worn" name="last_worn">
+        </form>
+    </div>
+
+    <button class="update-button" id="updateBtn">Update</button>
+
+    <script>
+        function handleImageError(img) {
+            img.onerror = null;
+            img.src = '/placeholder.jpg';
+        }
+    
+        function getQueryParams() {
+            const queryString = window.location.search;
+            const params = new URLSearchParams(queryString);
+            const details = {};
+            for (const [key, value] of params) {
+                details[key] = decodeURIComponent(value);
+            }
+            return details;
+        }
+    
+        function populateDetails() {
+            const details = getQueryParams();
+            const detailsDiv = document.getElementById('details');
+    
+            detailsDiv.innerHTML = `
+                <img src="${details.image_url || '/placeholder.jpg'}" 
+                     onerror="handleImageError(this)" 
+                     class="wardrobe-image">
+                <p><strong>Name:</strong> <input type="text" id="name" value="${details.name || ''}"></p>
+                <p><strong>Category:</strong> <input type="text" id="category" value="${details.category || ''}"></p>
+                <p><strong>Gender:</strong> <select id="gender">
+                    <option value="Male" ${details.gender === 'Male' ? 'selected' : ''}>Male</option>
+                    <option value="Female" ${details.gender === 'Female' ? 'selected' : ''}>Female</option>
+                    <option value="Unisex" ${details.gender === 'Unisex' ? 'selected' : ''}>Unisex</option>
+                </select></p>
+                <p><strong>Season:</strong> <input type="text" id="season" value="${details.season || ''}"></p>
+                <p><strong>Color Palette:</strong> <input type="text" id="color_palette" value="${details.color_palette || ''}"></p>
+                <p><strong>Status:</strong> <input type="text" id="status" value="${details.status || ''}"></p>
+                <p><strong>Material:</strong> <input type="text" id="material" value="${details.material || ''}"></p>
+                <p><strong>Location:</strong> <input type="text" id="location" value="${details.location || ''}"></p>
+                <p><strong>Last Worn:</strong> <input type="date" id="last_worn" value="${details.last_worn ? new Date(details.last_worn).toISOString().split('T')[0] : ''}"></p>
+                <button id="updateBtn">Update</button>
+            `;
+    
+            document.getElementById('updateBtn').addEventListener('click', updateDetails);
+        }
+    
+        async function updateDetails() {
+            const details = getQueryParams();
+    
+            const updatedDetails = {
+                image_url: details.image_url,
+                name: document.getElementById('name').value.trim(),
+                category: document.getElementById('category').value.trim(),
+                gender: document.getElementById('gender').value,
+                season: document.getElementById('season').value.trim(),
+                color_palette: document.getElementById('color_palette').value.trim(),
+                status: document.getElementById('status').value.trim(),
+                material: document.getElementById('material').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                last_worn: document.getElementById('last_worn').value,
+            };
+    
+            if (!updatedDetails.name || !updatedDetails.category || !updatedDetails.status) {
+                alert('Please fill in the required fields: Name, Category, and Status.');
+                return;
+            }
+    
+            try {
+                const response = await fetch('http://localhost:5000/api/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedDetails),
+                });
+    
+                if (response.ok) {
+                    alert('Clothing details updated successfully!');
+                } else {
+                    alert('Error updating clothing details!');
+                }
+            } catch (error) {
+                console.error("Update error:", error);
+                alert("An error occurred while updating.");
+            }
+        }
+    
+        window.onload = populateDetails;
+    </script>  
+</body>
+</html>

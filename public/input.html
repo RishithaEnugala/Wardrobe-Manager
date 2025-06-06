@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #003366, #800020);
+            color: #FFFFF0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+            flex-direction: column;
+            animation: backgroundMove 15s infinite alternate;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 2s ease-out;
+            backdrop-filter: blur(10px);
+            margin-top: 7cm;
+            padding-top: 5cm;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #0f0f0f;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            background-color: #B76E79;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #9B5E67;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        label span.required {
+            color: red;
+        }
+
+        input, select, .multi-color, .color-code {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="date"], select, .multi-color, .color-code {
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus, .multi-color:focus, .color-code:focus {
+            outline: none;
+            border-color: #B76E79;
+        }
+
+        .multi-color {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .color-code input {
+            width: 100%;
+            height: 40px;
+            font-size: 1rem;
+            padding-left: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .submit-button {
+            grid-column: span 2;
+            padding: 15px;
+            font-size: 1.1rem;
+            color: #fff;
+            background-color: #B76E79;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-button:hover {
+            background-color: #800020;
+            transform: translateY(-4px);
+        }
+
+        .submit-button:active {
+            transform: translateY(2px);
+        }
+
+        @media (max-width: 600px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            .submit-button {
+                grid-column: span 1;
+            }
+        }
+
+        @keyframes backgroundMove {
+            0% { background: linear-gradient(135deg, #003366, #800020); }
+            100% { background: linear-gradient(135deg, #800020, #003366); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="home-button">Home</a>
+    <div class="container">
+        <header>
+            <h1>Clothing Details</h1>
+        </header>
+
+        <form id="clothingForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Red T-shirt">
+            </div>
+            <div class="form-group">
+                <label for="category">Category: <span class="required">*</span></label>
+                <select id="category" name="category" required>
+                    <option value="top">Top</option>
+                    <option value="trousers">Trousers</option>
+                    <option value="dresses">Dresses</option>
+                    <option value="skirts">Skirts</option>
+                    <option value="jackets">Jackets</option>
+                    <option value="coats">Coats</option>
+                    <option value="sweaters">Sweaters</option>
+                    <option value="shorts">Shorts</option>
+                    <option value="activewear">Activewear</option>
+                    <option value="accessories">Accessories</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="unisex">Unisex</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="material">Material:</label>
+                <input type="text" id="material" name="material" placeholder="Cotton">
+            </div>
+            <div class="form-group">
+                <label for="colorPalette">Color Palette <span class="required">*</span>:</label>
+                <input type="text" id="colorPalette" name="colorPalette" placeholder="White, Red" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="season">Season:</label>
+                <select id="season" name="season">
+                    <option value="spring">Spring</option>
+                    <option value="summer">Summer</option>
+                    <option value="autumn">Autumn</option>
+                    <option value="winter">Winter</option>
+                    <option value="rainy">Rainy</option>
+                    <option value="all_season">All Season</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dressType">Dress Type:</label>
+                <input type="text" id="dressType" name="dressType" placeholder="Casual, Formal">
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="clean">Clean</option>
+                    <option value="in_use">In Use</option>
+                    <option value="laundry">Laundry</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="brand">Brand:</label>
+                <input type="text" id="brand" name="brand" placeholder="Nike">
+            </div>
+            <div class="form-group">
+                <label for="careInstructions">Care Instructions:</label>
+                <input type="text" id="careInstructions" name="careInstructions" placeholder="Machine wash cold">
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" placeholder="Wardrobe Top Shelf">
+            </div>
+            <div class="form-group">
+                <label for="dateAdded">Date Added: <span class="required">*</span></label>
+                <input type="date" id="dateAdded" name="dateAdded" required>
+            </div>
+            <div class="form-group">
+                <label for="lastWorn">Last Worn: <span class="required">*</span></label>
+                <input type="date" id="lastWorn" name="lastWorn" required>
+            </div>
+
+            <button type="submit" class="submit-button">Save Details</button>
+        </form>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const imageUrl = urlParams.get('imageUrl');
+            
+            if (!imageUrl) {
+                alert('Please upload an image first!');
+                window.location.href = 'upload.html'; 
+            } else {
+                console.log(`Img is ${imageUrl}`);
+            }
+        }
+
+        const form = document.getElementById('clothingForm');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const imageUrl = urlParams.get('imageUrl');
+            
+            if (!imageUrl) {
+                alert('Please upload an image first!');
+                return; 
+            }
+
+
+            const name = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            const gender = document.getElementById('gender').value;
+            const material = document.getElementById('material').value;
+            const colorPalette = document.getElementById('colorPalette').value;
+            const season = document.getElementById('season').value;
+            const dressType = document.getElementById('dressType').value;
+            const status = document.getElementById('status').value;
+            const brand = document.getElementById('brand').value;
+            const careInstructions = document.getElementById('careInstructions').value;
+            const location = document.getElementById('location').value;
+            const dateAdded = document.getElementById('dateAdded').value;
+            const lastWorn = document.getElementById('lastWorn').value;
+
+            fetch('http://localhost:5000/api/save-clothing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    imageUrl: imageUrl, 
+                    name: name,
+                    category: category,
+                    gender: gender,
+                    material: material,
+                    colorPalette: colorPalette,
+                    season: season,
+                    dressType: dressType,
+                    status: status,
+                    brand: brand,
+                    careInstructions: careInstructions,
+                    location: location,
+                    dateAdded: dateAdded,
+                    lastWorn: lastWorn
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Clothing details saved successfully!');
+                window.location.href = `index.html`;
+            })
+            .catch(error => {
+                console.error('Error saving clothing details:', error);
+                alert('Error saving clothing details!');
+            });
+        });
+    </script>
+</body>
+</html>

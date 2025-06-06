@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wardrobe Assistant Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #003366, #800020);
+            color: #FFFFF0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            margin: 0;
+            padding: 20px;
+            overflow-y: auto;
+            animation: backgroundMove 15s infinite alternate;
+        }
+
+        .banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 37cm; 
+    height: 5cm; 
+    z-index: 10; 
+    background-image: url('LOGO.png');
+    background-size: 100% auto; 
+    background-repeat: no-repeat;  
+    background-position: center; 
+}
+
+.container {
+    width: 90%;
+    max-width: 900px;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeIn 2s ease-out;
+    backdrop-filter: blur(10px);
+    margin-top: 7cm; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #0f0f0f;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        h2 {
+            color: #FFD700;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #FFFFF0;
+            line-height: 1.6;
+            margin: 20px 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: slideIn 1.5s ease-in-out;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: center;
+        }
+
+        .menu-button {
+            font-size: 1.4rem;
+            color: #FFFFF0;
+            background-color: #B76E79;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 280px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-button:hover {
+            transform: scale(1.1);
+            background-color: #800020;
+        }
+
+        .about {
+            margin-top: 40px;
+            background-color: #003366;
+            padding: 20px;
+            border-radius: 6px;
+            color: #FFFFF0;
+            animation: fadeInUp 2s ease-out;
+            display: none;
+        }
+
+        .about.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            .menu-button {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Welcome to Wardrobe Sync</h1>
+            <h2>Where Connection meets Efficiency</h2>
+        </header>
+
+        <p style="color: black;">Your virtual wardrobe is now just a tap away. Effortlessly organize, track, and manage your clothing collection with ease.</p>
+
+        <div class="menu">
+            <div class="menu-item">
+                <a href="about.html">
+                    <button class="menu-button">About</button>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="upload.html">
+                    <button class="menu-button">Add Items to Wardrobe</button>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="search.html">
+                    <button class="menu-button">Check Wardrobe</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="about" id="aboutSection">
+            <h2>About This Website</h2>
+            <p>The Wardrobe Sync is designed to help you effortlessly manage your clothing. Add, categorize, and track your wardrobe items by season, type, color, and more. Think of it as your digital closet, always keeping you organized and stylish.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const aboutButton = document.querySelector('.menu-item a[href="about.html"]');
+        const aboutSection = document.getElementById('aboutSection');
+
+        aboutButton.addEventListener('click', function (event) {
+            event.preventDefault(); 
+            aboutSection.classList.toggle('visible');
+        });
+    </script>
+
+</body>
+</html>

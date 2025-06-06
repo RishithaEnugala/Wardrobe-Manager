@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wardrobe Manager - Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #003366, #800020); 
+            color: white;
+            overflow-x: hidden;
+            transition: all 0.5s ease-in-out; 
+        }
+
+        h1 {
+            color: #FFD700; 
+            text-align: center;
+            margin-top: 30px;
+            font-size: 3rem;
+            animation: slideIn 1s ease-out; 
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #results {
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 1s ease-out; 
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #results div {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            margin: 15px auto;
+            padding: 20px;
+            display: inline-block;
+            width: 45%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #results div:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .wardrobe-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #results p {
+            color: #0f0f0f; 
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            background-color: #B76E79; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none; 
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #9B5E67; 
+        }
+
+        .capture-button {
+            padding: 14px 28px;
+            background-color: #25D366; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 20px auto;
+            display: block;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .capture-button:hover {
+            background-color: #128C7E;
+        }
+
+        .capture-button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <a href="search.html" class="home-button">Back to Search</a>
+    <h1>Wardrobe Search Results</h1>
+    
+    <div id="results"></div>
+
+    <button id="captureAndShareBtn" class="capture-button">Share</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        const data = JSON.parse(localStorage.getItem('wardrobeData'));
+
+        if (!data) {
+            alert("No data found! Please search first.");
+            window.location.href = 'search.html'; 
+        }
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = `<p style="color: #FFD700;">${data.message}</p>`;
+
+        const list = data.results.map(item => `
+            <div>
+                <img src="${item.image_url || '/placeholder.jpg'}" 
+                     onerror="handleImageError(this)" 
+                     class="wardrobe-image">
+                <p>Status: ${item.status || 'Unknown'}</p>
+                <p>Material: ${item.material || 'Not specified'}</p>
+                <p>Location: ${item.location || 'Not specified'}</p>
+                <p>Last Worn: ${item.last_worn ? new Date(item.last_worn).toLocaleDateString() : 'Not available'}</p>
+            </div>
+        `).join('');
+
+        resultsDiv.innerHTML += list;
+        
+        const today = new Date().toISOString().split('T')[0];
+        if (dateAdded > today || lastWorn > today) {
+            alert('Dates cannot be in the future.');
+            return;
+        }
+
+        function handleImageError(img) {
+            img.onerror = null;
+            img.src = '/placeholder.jpg'; 
+        }
+
+        document.getElementById('captureAndShareBtn').addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: 'a4'
+            });
+
+            const canvas = await html2canvas(resultsDiv, {
+                scale: 2, 
+                useCORS: true 
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+
+            const imgWidth = pdf.internal.pageSize.getWidth();color
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            const now = new Date();
+            const formattedDate = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
+            const fileName = `wardrobe_results_${formattedDate}.pdf`;
+            pdf.save(fileName);
+        });
+    </script>
+</body>
+</html>

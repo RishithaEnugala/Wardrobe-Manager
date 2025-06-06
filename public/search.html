@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wardrobe Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #003366, #800020); 
+            color: white;
+            overflow-x: hidden;
+            transition: all 0.5s ease-in-out; 
+        }
+
+        h1 {
+            color: #FFD700; 
+            text-align: center;
+            margin-top: 30px;
+            font-size: 3rem;
+            animation: slideIn 1s ease-out; 
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #query {
+            width: 80%;
+            padding: 12px;
+            margin: 20px auto;
+            border: 2px solid rgba(0, 0, 0, 0.3); 
+            border-radius: 5px;
+            display: block;
+            background-color: #fff;
+            color: #0f0f0f; 
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #query:focus {
+            border-color: #B76E79; 
+            box-shadow: 0 0 10px #B76E79; 
+            outline: none;
+        }
+
+        #searchBtn {
+            padding: 12px 25px;
+            background-color: #B76E79; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: block;
+            margin: 10px auto;
+            transition: all 0.3s ease;
+        }
+
+        #searchBtn:hover {
+            background-color: #9B5E67; 
+        }
+
+        #results {
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 1s ease-out; 
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #results div {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            margin: 15px auto;
+            padding: 20px;
+            display: inline-block;
+            width: 45%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #results div:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .wardrobe-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #results p {
+            color: #0f0f0f; 
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            background-color: #B76E79; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none; 
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #9B5E67; 
+        }
+
+        #captureAndShareBtn {
+            padding: 14px 28px;
+            background-color: #25D366; 
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 20px auto;
+            display: block;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #captureAndShareBtn:hover {
+            background-color: #128C7E; 
+        }
+
+        #captureAndShareBtn:active {
+            transform: scale(0.98);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</head>
+<body>
+    <a href="index.html" class="home-button">Home</a>
+    <h1>Search your Wardrobe</h1>
+    <input type="text" id="query" placeholder="Ask about your wardrobe">
+    <button id="searchBtn">Search</button>
+    <div id="results"></div>
+
+    <button id="captureAndShareBtn">Capture & Share</button>
+
+    <script>
+        function handleImageError(img) {
+            img.onerror = null;
+            img.src = '/placeholder.jpg'; 
+        }
+    
+        document.getElementById('searchBtn').addEventListener('click', async () => {
+            const query = document.getElementById('query').value;
+    
+            try {
+                const response = await fetch('http://localhost:5000/api/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+    
+                if (!response.ok) {
+                    console.error("Failed to fetch data from the server");
+                    alert("Error: Unable to fetch data from server");
+                    return;
+                }
+    
+                const data = await response.json();
+                console.log("Received data:", data);  
+    
+                if (typeof data.results === 'string') {
+                    const resultsArray = data.results.split('\n').map(item => {
+                        const parts = item.split('(');
+                        const name = parts[0].trim();
+                        const details = parts[1] ? parts[1].replace(')', '').split(',') : [];
+    
+                        return {
+                            name: name,
+                            category: details[0]?.trim() || 'Unknown category',
+                            gender: details[1]?.trim() || 'Unisex',
+                            season: details[2]?.trim() || 'Not specified',
+                            color_palette: details[3]?.trim() || 'Not specified',
+                            image_url: '/uploads/placeholder.jpg'
+                        };
+                    });
+    
+                    data.results = resultsArray;
+                }
+    
+                if (!Array.isArray(data.results)) {
+                    console.error("Results are not in expected format", data);
+                    alert("Error: Unexpected data format received from server");
+                    return;
+                }
+    
+                localStorage.setItem('wardrobeData', JSON.stringify(data));
+    
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `<p style="color: #FFD700;">${data.message}</p>`;
+    
+                const list = data.results.map(item => {
+                    const params = new URLSearchParams({
+                        image_url: item.image_url || '/placeholder.jpg',
+                        name: item.name || '',
+                        category: item.category || '',
+                        gender: item.gender || 'Unisex',
+                        season: item.season || '',
+                        color_palette: item.color_palette || '',
+                        status: item.status || '',
+                        material: item.material || '',
+                        location: item.location || '',
+                        last_worn: item.last_worn || '',
+                    }).toString();
+    
+                    return `
+                        <a href="update.html?${params}" style="text-decoration:none; color:inherit;">
+                            <div class="wardrobe-item">
+                                <img src="${item.image_url || '/placeholder.jpg'}" onerror="handleImageError(this)" class="wardrobe-image">
+                                <p>Status: ${item.status || 'Unknown'}</p>
+                                <p>Material: ${item.material || 'Not specified'}</p>
+                                <p>Location: ${item.location || 'Not specified'}</p>
+                                <p>Last Worn: ${item.last_worn ? new Date(item.last_worn).toLocaleDateString() : 'Not available'}</p>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+    
+                resultsDiv.innerHTML += list;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                alert("Error: Unable to fetch data. Please try again.");
+            }
+        });
+    
+        document.getElementById('captureAndShareBtn').addEventListener('click', () => {
+            window.location.href = 'render.html';
+        });
+    
+        document.getElementById('query').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                document.getElementById('searchBtn').click(); 
+            }
+        });
+    </script>
+</body>
+</html>

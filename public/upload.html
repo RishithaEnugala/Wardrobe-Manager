@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Clothing Image</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #003366, #800020);
+            color: #FFF9E6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            margin: 0;
+            padding: 20px;
+            overflow-y: auto;
+            animation: backgroundMove 15s infinite alternate;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #f006f8;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: #B76E79;
+            color: white;
+            font-size: 1.4rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: #800020;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        #videoContainer {
+            display: none;
+            position: relative;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 480px;
+            height: 320px;
+            border-radius: 10px;
+            border: 3px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #captureButton {
+            background-color: #f006f8;
+            color: white;
+            font-size: 1.2rem;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        #captureButton:hover {
+            background-color: #9b1dbf;
+        }
+
+        #imagePreview {
+            display: none;
+            width: 80%;          
+            max-width: 500px;   
+            height: auto;       
+            max-height: 350px;   
+            object-fit: contain; 
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
+            border: 3px solid #ddd;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        #uploadButton {
+            display: none;
+            background-color: #81c784;
+            color: white;
+            font-size: 1.4rem;
+            padding: 12px 24px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #uploadButton:hover {
+            background-color: #66bb6a;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            #videoContainer {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            #video {
+                width: 100%;
+            }
+        }
+
+        @keyframes backgroundMove {
+            0% {
+                background: linear-gradient(135deg, #003366, #800020);
+            }
+            100% {
+                background: linear-gradient(135deg, #800020, #003366);
+            }
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            background-color: #B76E79;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .home-button:hover {
+            background-color: #9B5E67;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">Home</a>
+
+    <h1>Update Your Wardrobe</h1>
+
+    <div class="button-container">
+        <button id="takePictureButton">Take Picture</button>
+        <button id="chooseImageButton">Choose Image</button>
+    </div>
+
+    <div id="videoContainer">
+        <video id="video" autoplay></video>
+        <button id="captureButton">Capture</button>
+    </div>
+
+    <img id="imagePreview" alt="Captured Image">
+
+    <input id="uploadInput" type="file">
+
+    <button id="uploadButton">Upload Image</button>
+
+    <script>
+        const takePictureButton = document.getElementById('takePictureButton');
+        const chooseImageButton = document.getElementById('chooseImageButton');
+        const videoContainer = document.getElementById('videoContainer');
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('captureButton');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadInput = document.getElementById('uploadInput');
+    
+        let capturedImageData = null;
+        let itemId = null;
+        let imageUrl = null;
+    
+        takePictureButton.addEventListener('click', function () {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                    videoContainer.style.display = 'block';
+                    captureButton.style.display = 'inline-block';
+                    takePictureButton.style.display = 'none';
+                })
+                .catch(function (err) {
+                    console.log("Error accessing camera: ", err);
+                });
+        });
+    
+        captureButton.addEventListener('click', function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+            capturedImageData = compressImage(canvas);
+            imagePreview.src = capturedImageData;
+            imagePreview.style.display = 'block';
+            uploadButton.style.display = "inline-block";
+    
+            video.srcObject.getTracks().forEach(track => track.stop()); 
+        });
+    
+        function compressImage(canvas) {
+            const compressedCanvas = document.createElement('canvas');
+            const ctx = compressedCanvas.getContext('2d');
+    
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+    
+            let width = canvas.width;
+            let height = canvas.height;
+    
+            if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                width = width * ratio;
+                height = height * ratio;
+            }
+    
+            compressedCanvas.width = width;
+            compressedCanvas.height = height;
+    
+            ctx.drawImage(canvas, 0, 0, width, height);
+    
+            return compressedCanvas.toDataURL('image/jpeg', 0.8); 
+        }
+    
+        uploadButton.addEventListener('click', function () {
+            if (!capturedImageData) {
+                alert('No image captured!');
+                return;
+            }
+    
+            fetch('http://localhost:5000/api/upload-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    image: capturedImageData
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Image saved successfully") {
+                    alert('Image successfully uploaded!');
+                    imageUrl = data.imageUrl;
+                    window.location.href = `input.html?imageUrl=${encodeURIComponent(imageUrl)}`;
+                } else {
+                    alert('Failed to upload image!');
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+                alert('Error uploading image!');
+            });
+        });
+    
+        chooseImageButton.addEventListener('click', function () {
+            uploadInput.click(); 
+        });
+    
+        uploadInput.addEventListener('change', function () {
+            const file = uploadInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    capturedImageData = reader.result;
+                    imagePreview.src = capturedImageData;
+                    imagePreview.style.display = 'block';
+                    uploadButton.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    
+</body>
+</html>
